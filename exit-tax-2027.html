@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027년 국외주식 국외전출세 개정안 및 실무 가이드</title>
+<style>
+:root{
+  --navy:#0b1f3a; --navy2:#12305a; --blue:#1f5fbf; --teal:#0fa3a3;
+  --gold:#e0a526; --red:#d64545; --ink:#1b2433; --muted:#5f6b7d;
+  --line:#dbe2ee; --bg:#f4f7fb; --card:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#05101f;overflow:hidden;
+  font-family:"Pretendard","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:var(--ink)}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1280px;height:720px;position:relative;transform-origin:center center;flex:none}
+.slide{position:absolute;inset:0;background:var(--bg);padding:56px 72px 64px;
+  opacity:0;visibility:hidden;transform:translateX(40px);transition:opacity .35s,transform .35s,visibility .35s;overflow:hidden}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.past{transform:translateX(-40px)}
+.slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(var(--blue),var(--teal))}
+
+/* header */
+.kicker{font-size:15px;font-weight:700;letter-spacing:.12em;color:var(--teal);margin-bottom:8px}
+h2{font-size:38px;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.25}
+.sub{font-size:19px;color:var(--muted);margin-top:10px;line-height:1.5}
+.head{padding-bottom:18px;margin-bottom:22px;border-bottom:2px solid var(--line)}
+.foot{position:absolute;left:72px;right:130px;bottom:22px;display:flex;justify-content:space-between;
+  font-size:13px;color:#8693a6}
+
+/* title slide */
+.slide.cover{background:radial-gradient(1200px 700px at 85% 15%,#1d4f95 0%,var(--navy) 55%,#07142a 100%);color:#fff;
+  display:flex;flex-direction:column;justify-content:center;padding-left:110px}
+.slide.cover::before{background:linear-gradient(var(--gold),#f6d37a)}
+.cover .tag{display:inline-block;align-self:flex-start;padding:6px 16px;border:1px solid rgba(255,255,255,.4);
+  border-radius:999px;font-size:16px;letter-spacing:.08em;margin-bottom:28px;color:#cfe0ff}
+.cover h1{font-size:60px;line-height:1.2;font-weight:800;letter-spacing:-.03em}
+.cover h1 em{font-style:normal;color:var(--gold)}
+.cover p{margin-top:28px;font-size:22px;color:#c4d3ee}
+.cover .org{position:absolute;left:110px;bottom:56px;font-size:17px;color:#9fb4d9}
+.cover .big{position:absolute;right:70px;bottom:20px;font-size:260px;font-weight:900;color:rgba(255,255,255,.06);line-height:1}
+
+/* components */
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;
+  box-shadow:0 6px 18px rgba(16,40,80,.06)}
+.card h3{font-size:21px;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.card p,.card li{font-size:17px;line-height:1.6;color:#364055}
+.card ul{padding-left:20px}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
+.accent{border-left:6px solid var(--teal)}
+.warn{border-left:6px solid var(--gold);background:#fff9e9}
+.alert{border-left:6px solid var(--red);background:#fff1f1}
+.callout{margin-top:18px;padding:16px 22px;border-radius:12px;background:var(--navy);color:#fff;font-size:18px;line-height:1.55}
+.callout b{color:var(--gold)}
+.badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:14px;font-weight:700;color:#fff;background:var(--blue)}
+.badge.t{background:var(--teal)}.badge.g{background:var(--gold);color:#3a2a00}.badge.r{background:var(--red)}
+.stat{text-align:center}
+.stat .v{font-size:54px;font-weight:900;color:var(--blue);line-height:1.1}
+.stat .v small{font-size:26px}
+.stat .l{font-size:17px;color:var(--muted);margin-top:6px}
+
+/* table */
+table{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;
+  border:1px solid var(--line);background:#fff;font-size:17px}
+th,td{padding:13px 18px;text-align:left;line-height:1.5;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--navy2);color:#fff;font-weight:700}
+td:first-child{font-weight:700;color:var(--navy);background:#f0f4fa;width:17%}
+tr:last-child td{border-bottom:0}
+td.new{background:#eefaf9}
+th.new{background:var(--teal)}
+
+/* flow */
+.flow{display:flex;align-items:stretch;gap:0}
+.step{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;position:relative}
+.step+.step{margin-left:34px}
+.step+.step::before{content:"▶";position:absolute;left:-28px;top:50%;transform:translateY(-50%);color:var(--teal);font-size:20px}
+.step .n{font-size:14px;font-weight:800;color:var(--teal);letter-spacing:.1em}
+.step h4{font-size:20px;color:var(--navy);margin:4px 0 8px}
+.step p{font-size:16px;line-height:1.55;color:#364055}
+
+/* nav */
+#bar{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--teal),var(--gold));width:0;transition:width .3s;z-index:9}
+#nav{position:fixed;right:18px;bottom:14px;display:flex;gap:8px;z-index:9;opacity:.5;transition:opacity .2s}
+#nav:hover{opacity:1}
+#nav button{width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:var(--navy);font-size:18px;cursor:pointer}
+#hint{position:fixed;right:18px;top:12px;color:#7f93b5;font-size:13px;z-index:9}
+
+@media print{
+  @page{size:1280px 720px;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;display:block}
+  #stage{transform:none!important;height:auto}
+  .slide{position:relative;opacity:1;visibility:visible;transform:none!important;width:1280px;height:720px;page-break-after:always}
+  #bar,#nav,#hint{display:none}
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="viewport"><div id="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <span class="tag">2027.1.1. 출국분부터 시행</span>
+  <h1>국외주식 <em>국외전출세</em><br>개정안 및 실무 가이드</h1>
+  <p>국외주식등 과세 대상 확대에 따른 세원 관리와 현장 집행 포인트</p>
+  <div class="org">국세청 종합소득세 담당 · 내부 교육자료</div>
+  <div class="big">EXIT</div>
+</section>
+
+<!-- 2 개념 -->
+<section class="slide">
+  <div class="head"><div class="kicker">01 · 개념 및 입법 취지</div>
+    <h2>국외전출세란 무엇인가</h2>
+    <p class="sub">출국 시점의 미실현 평가이익을 <b>출국일에 양도한 것으로 간주</b>하여 양도소득세를 과세하는 특례 제도</p></div>
+  <div class="grid g3">
+    <div class="card accent"><h3><span class="num">1</span>과세권 유실 차단</h3>
+      <p>비거주자가 된 후 주식을 매각하면 조세조약상 거주지국 과세 원칙에 따라 우리나라 과세권이 상실되는 구조적 위험을 사전에 차단합니다.</p></div>
+    <div class="card accent"><h3><span class="num">2</span>국내 형성이익 정산</h3>
+      <p>주식 가치 상승은 국내 거주 기간 중 형성된 것입니다. 이주 전 출국 시점에 정산 과세하여 과세권을 확정·확보합니다.</p></div>
+    <div class="card accent"><h3><span class="num">3</span>역외탈세 방지·형평</h3>
+      <p>해외 이주를 양도세 회피 수단으로 악용하는 시도를 차단하고, 국내 거주 납세자와의 과세 형평을 제고합니다.</p></div>
+  </div>
+  <div class="callout">국외주식 투자 확대 추세에 맞춰, <b>2027년부터 과세 범위를 국외주식까지 확장</b>합니다.</div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>2 / 11</span></div>
+</section>
+
+<!-- 3 비교 -->
+<section class="slide">
+  <div class="head"><div class="kicker">02 · 현행 vs 개정안</div>
+    <h2>한눈에 보는 변화</h2>
+    <p class="sub">서학개미 등 국외주식 투자 급증에 따른 과세 사각지대 해소</p></div>
+  <table>
+    <tr><th>구분</th><th>현행 (~2026.12.31 출국분)</th><th class="new">2027년 개정안 (2027.1.1~ 출국분)</th></tr>
+    <tr><td>과세 대상 자산</td><td>국내 주식 (상장·비상장, 부동산 과다보유법인 주식)</td><td class="new"><b>국내 주식 + 국외주식등 추가</b></td></tr>
+    <tr><td>대주주 판정</td><td>국내 주식 기준</td><td class="new">국외주식 제외, <b>국내 주식 기준으로만</b> 판정</td></tr>
+    <tr><td>적용 세율</td><td>20% / 25% (과세표준 3억 원 초과분)</td><td class="new">국내: 현행 유지<br>국외: <b>중소 10% · 그 외 20%</b></td></tr>
+    <tr><td>과세 제외</td><td>국외주식 전액 비과세</td><td class="new"><b>시가 5억 원 이하</b> 및 <b>외국인 근로자</b> 보유분 제외</td></tr>
+  </table>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>3 / 11</span></div>
+</section>
+
+<!-- 4 대상 -->
+<section class="slide">
+  <div class="head"><div class="kicker">03-1 · 인적 요건 및 과세 대상</div>
+    <h2>누가, 어떤 자산이 과세 대상인가</h2></div>
+  <div class="grid" style="grid-template-columns:5fr 7fr">
+    <div class="card stat" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="l">핵심 인적 요건</div>
+      <div class="v">5<small>년 이상</small></div>
+      <div class="l">출국일 전 <b>10년 중</b> 국내 거주기간<br>(거주자 → 비거주자 전환)</div></div>
+    <div class="card"><h3>과세 대상 국외주식 범주</h3>
+      <ul>
+        <li>외국법인이 발행한 주식 및 출자지분<br><span style="color:var(--muted)">(단, 국내 증권시장 상장 주식등은 제외)</span></li>
+        <li style="margin-top:10px">해외 증권시장에 상장된 내국법인 발행 주식등</li>
+      </ul></div>
+  </div>
+  <div class="callout">출국 사실·주민등록 이탈만으로 판단하지 않고, <b>주소·직업·가족·자산 관계</b> 등 실질 생활관계로 거주자 여부를 판정합니다.</div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>4 / 11</span></div>
+</section>
+
+<!-- 5 대주주 -->
+<section class="slide">
+  <div class="head"><div class="kicker">03-1 · 대주주 판정 메커니즘</div>
+    <h2>국외주식은 대주주 판정에서 제외</h2>
+    <p class="sub">국내주식만으로 대주주 여부를 먼저 판정하고, 해당될 때 국외주식이 합산됩니다.</p></div>
+  <div class="flow">
+    <div class="step"><div class="n">STEP 1</div><h4>국내주식 단독 판정</h4>
+      <p>출국 직전 연도 말 기준, 국외주식 보유량을 배제하고 <b>국내주식만</b>으로 대주주 요건을 판정</p></div>
+    <div class="step" style="border-top:5px solid var(--gold)"><div class="n">STEP 2 · 미충족</div><h4>비과세</h4>
+      <p>대주주 요건 미충족 시, 해외주식을 아무리 많이 보유해도 <b>과세 대상에서 제외</b></p></div>
+    <div class="step" style="border-top:5px solid var(--red)"><div class="n">STEP 3 · 충족</div><h4>합산 과세</h4>
+      <p>국외전출자로 확정된 경우에 한해 <b>국외주식이 과세 대상 자산으로 합산</b>되어 과세</p></div>
+  </div>
+  <div class="callout">국외주식만 대량 보유한 거주자는 국외전출세 대상이 <b>아닙니다</b>. 국내 대주주 요건이 선결 조건입니다.</div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>5 / 11</span></div>
+</section>
+
+<!-- 6 세율 -->
+<section class="slide">
+  <div class="head"><div class="kicker">03-2 · 세율 및 과세 제외 특례</div>
+    <h2>단일세율과 5억 원 기준</h2></div>
+  <div class="grid g3">
+    <div class="card stat"><div class="l">중소기업 발행 국외주식</div><div class="v">10<small>%</small></div><div class="l">단일세율</div></div>
+    <div class="card stat"><div class="l">그 밖의 일반 국외주식</div><div class="v">20<small>%</small></div><div class="l">단일세율</div></div>
+    <div class="card stat"><div class="l">소액 과세 제외 기준</div><div class="v">5<small>억 원 이하</small></div><div class="l">출국 당시 시가 총액</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card alert"><h3>⚠ 실무 유의: 초과 시 전액 과세</h3>
+      <p>총액이 5억 원을 초과하면 5억 원을 <b>공제하지 않고 전체 가액</b>에 과세합니다. (초과분 과세 아님) 현장 지도 시 명확히 안내하세요.</p></div>
+    <div class="card warn"><h3>외국인 근로자 특례</h3>
+      <p>국내에서 근로를 제공한 후 출국하는 외국인 근로자 및 그가 보유한 주식등은 과세 제외 규정을 적용합니다.</p></div>
+  </div>
+  <div class="foot"><span>국외주식은 누진세율이 아닌 단일 세율 · 국내주식은 현행 유지</span><span>6 / 11</span></div>
+</section>
+
+<!-- 7 평가 -->
+<section class="slide">
+  <div class="head"><div class="kicker">03-3 · 시가 평가 방법</div>
+    <h2>간주양도가액 산정 기준</h2>
+    <p class="sub">출국일 당시 보유한 국외주식의 양도가액 평가</p></div>
+  <div class="grid g2">
+    <div class="card accent"><h3><span class="badge t">상장</span>해외 상장주식</h3>
+      <p style="font-size:19px">출국일 당시의 <b>최종 시세가액</b> 등 기준시가를 적용</p></div>
+    <div class="card accent"><h3><span class="badge">비상장</span>해외 비상장주식</h3>
+      <ul>
+        <li><b>1순위</b> 출국일 전후 <b>3개월 이내 매매사례가액</b></li>
+        <li style="margin-top:8px"><b>2순위</b> 매매사례가 없으면 상증세법상 보충적 평가방법 준용</li>
+      </ul></div>
+  </div>
+  <div class="card" style="margin-top:20px;text-align:center">
+    <p style="font-size:18px;color:var(--muted)">보충적 평가방법 (순손익가치 : 순자산가치)</p>
+    <p style="font-size:34px;font-weight:800;color:var(--navy);margin-top:6px">
+      <span style="color:var(--blue)">3</span> : <span style="color:var(--teal)">2</span> 가중평균</p></div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>7 / 11</span></div>
+</section>
+
+<!-- 8 절차 -->
+<section class="slide">
+  <div class="head"><div class="kicker">04-1 · 신고·납부 절차</div>
+    <h2>출국 전·후 이행 절차</h2></div>
+  <div class="flow">
+    <div class="step" style="border-top:5px solid var(--blue)"><div class="n">1단계 · 출국 전</div><h4>출국일 전날까지</h4>
+      <p><b>납세관리인 지정 신고</b> 및 <b>주식 보유현황 신고</b><br>(관할 세무서)</p>
+      <p style="margin-top:12px"><span class="badge r">가산세</span> 미신고·누락 시 액면금액(출자가액)의 <b>2%</b></p></div>
+    <div class="step" style="border-top:5px solid var(--teal)"><div class="n">2단계 · 출국 후</div><h4>출국일 속한 달 말일부터 3개월 이내</h4>
+      <p><b>과세표준 신고 및 세액 납부</b><br>(관할 세무서)</p>
+      <p style="margin-top:12px"><span class="badge g">유의</span> 법정 기한 내 미납 시 가산세 대상</p></div>
+  </div>
+  <div class="callout">납세자가 보유현황 미신고 가산세(2%) 등 불이익을 받지 않도록 <b>사전 안내</b>가 중요합니다.</div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>8 / 11</span></div>
+</section>
+
+<!-- 9 권리구제 -->
+<section class="slide">
+  <div class="head"><div class="kicker">04-2 · 납세자 권리구제</div>
+    <h2>부담 완화 3대 장치</h2></div>
+  <div class="grid g3">
+    <div class="card accent"><h3><span class="num">1</span>납부유예</h3>
+      <p>적격 납세담보 제공 + 납세관리인 지정 시 <b>양도 시까지 납부유예</b></p>
+      <p style="margin-top:10px"><span class="badge">일반 최대 5년</span> <span class="badge t">유학 최대 10년</span></p></div>
+    <div class="card accent"><h3><span class="num">2</span>재입국 환급</h3>
+      <p>출국 후 <b>5년 이내</b> 주식 미양도 상태로 재입국·거주자 전환 시 납부세액 <b>환급 신청</b> 가능</p></div>
+    <div class="card accent"><h3><span class="num">3</span>경정청구</h3>
+      <p>실제 양도가액이 출국일 평가액보다 낮거나(조정공제), 외국에 양도세를 납부한 경우 <b>양도일로부터 2년 이내</b> 청구</p></div>
+  </div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>9 / 11</span></div>
+</section>
+
+<!-- 10 체크포인트 -->
+<section class="slide">
+  <div class="head"><div class="kicker">05 · 국세청 직원 실무 체크포인트</div>
+    <h2>4대 실무 점검사항</h2></div>
+  <div class="grid g2">
+    <div class="card accent"><h3><span class="num">1</span>거래내역 자료 활용</h3>
+      <p>2026.1.1.부터 시행되는 금융투자업자의 <b>국외주식 거래내역 제출 자료</b>로 출국 예정자 보유내역을 사전 검증</p></div>
+    <div class="card accent"><h3><span class="num">2</span>거주자 실질 판정</h3>
+      <p>주소·직업·가족·자산 등 <b>실질 생활관계</b> 종합 검토, 출국일 전 10년 중 5년 이상 거주 여부 재확인</p></div>
+    <div class="card alert"><h3><span class="num" style="background:var(--red)">3</span>납세담보 적격성</h3>
+      <p><b>비상장주식은 적격 납세담보가 아님</b>(국세징수법) — 담보 승인 오류 방지</p></div>
+    <div class="card warn"><h3><span class="num" style="background:var(--gold);color:#3a2a00">4</span>이중과세 조정</h3>
+      <p>간주양도 시점과 실제 양도 시점 간 불일치 → <b>외국납부세액공제·취득가액 Step-up</b> 적용 안내</p></div>
+  </div>
+  <div class="foot"><span>2027년 국외주식 국외전출세</span><span>10 / 11</span></div>
+</section>
+
+<!-- 11 요약 -->
+<section class="slide cover">
+  <span class="tag">SUMMARY</span>
+  <h1>핵심 요약</h1>
+  <div style="margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:16px 40px;max-width:1000px;font-size:21px;line-height:1.5;color:#e6eefc">
+    <div>✔ 2027.1.1. 이후 출국자부터 <b style="color:var(--gold)">국외주식 과세</b></div>
+    <div>✔ 대주주 판정은 <b style="color:var(--gold)">국내주식만</b> 기준</div>
+    <div>✔ 세율 <b style="color:var(--gold)">중소 10% · 그 외 20%</b></div>
+    <div>✔ <b style="color:var(--gold)">5억 원 이하</b> 제외, 초과 시 전액 과세</div>
+    <div>✔ 출국 전 신고 누락 시 <b style="color:var(--gold)">2% 가산세</b></div>
+    <div>✔ 납부유예 5년(유학 10년)·재입국 환급·경정청구</div>
+  </div>
+  <div class="org">정교하고 엄정한 세법 집행으로 역외 세원 관리 체계를 완성합니다.</div>
+</section>
+
+</div></div>
+
+<div id="hint">← → 이동 · F 전체화면 · P 인쇄(PDF)</div>
+<div id="nav"><button id="prev" aria-label="이전">◀</button><button id="next" aria-label="다음">▶</button></div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      stage=document.getElementById('stage'),bar=document.getElementById('bar'),i=0;
+  function fit(){var s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform='scale('+s+')'}
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(el,k){el.classList.toggle('active',k===i);el.classList.toggle('past',k<i)});
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    history.replaceState(null,'','#'+(i+1));
+  }
+  addEventListener('resize',fit);fit();
+  addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();show(i+1)}
+    else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();show(i-1)}
+    else if(k==='Home')show(0);else if(k==='End')show(slides.length-1);
+    else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+    else if(k==='p'||k==='P')print();
+  });
+  document.getElementById('next').onclick=function(){show(i+1)};
+  document.getElementById('prev').onclick=function(){show(i-1)};
+  var tx=null;
+  addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;
+    if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+  show((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
